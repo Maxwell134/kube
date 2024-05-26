@@ -4,14 +4,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-               checkout scm
+                // Checkout your source code here
+                // e.g., checkout scm
             }
         }
         
         stage('Run Docker Tasks') {
             steps {
                 script {
-                    // Load and parse pipeline.json
+                    // Read the JSON file using the correct method readJSON
                     def pipelineConfig = readJSON file: 'pipeline.json'
                     
                     // Load the runDockerTasks script
