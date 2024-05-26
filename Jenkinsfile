@@ -16,7 +16,7 @@ pipeline {
                     def pipelineConfig = readJSON file: 'pipeline.json'
                     
                     // Load the runDockerTasks script
-                    def dockerTasks = load 'dockerTasks.groovy'
+                    def dockerTasks = load 'sample.groovy'
                     
                     // Call the runDockerTasks method with values from pipeline.json
                     dockerTasks.runDockerTasks(pipelineConfig.imageName, pipelineConfig.imageTag, pipelineConfig.dockerUsername)
