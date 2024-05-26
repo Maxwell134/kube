@@ -1,4 +1,4 @@
-@Library('json-utils') _
+
 import groovy.json.JsonSlurper
 
 pipeline {
