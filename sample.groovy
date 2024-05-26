@@ -1,7 +1,7 @@
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic 
 
 // Load and parse pipeline.json
-def pipelineConfig = new JsonSlurper().parseText(new File('pipeline.json').text)
+def pipelineConfig = new JsonSlurperClassic().parseText('pipeline.json')
 
 // Define a method to handle Docker-related tasks
 def runDockerTasks(imageName, imageTag, dockerUsername) {
