@@ -18,9 +18,13 @@ def runDockerTasks(imageName, imageTag, dockerUsername) {
     
     // Tag the Docker image with the Docker Hub username
     sh "docker tag ${dockerImage} ${dockerImageWithTag}"
+
+    
     
     // Push the Docker image to the registry
-    sh "docker push ${dockerImageWithTag}"
+    withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
+    sh "docker push ${dockerImageWithTag}:${dockerImageWithTag}"
+    }
 }
 
 // Call the method with values from pipeline.json
