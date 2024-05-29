@@ -23,7 +23,7 @@ def runDockerTasks(imageName, imageTag, dockerUsername) {
     
     // Push the Docker image to the registry
     withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
-    sh "docker push ${dockerImageWithTag}:${dockerImageWithTag}"
+    sh "docker push ${dockerImageWithTag}"
     }
 }
 
