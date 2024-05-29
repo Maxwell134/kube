@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_USERNAME = credentials('dockerhub-credentials')
+    }
+
     stages {
         stage('Read JSON') {
             steps {
@@ -12,7 +16,7 @@ pipeline {
                     // Extract the variables from JSON
                     def imageName = jsonContent.imageName
                     def imageTag = jsonContent.imageTag
-                    def dockerUsername = jsonContent.dockerUsername
+                    def dockerUsername = env.DOCKER_USERNAME
                     
                     // Load the Groovy script
                     def call = load 'sample.groovy'
