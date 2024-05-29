@@ -25,6 +25,25 @@ pipeline {
                     call.runDockerTasks(imageName, imageTag, dockerUsername)
                 }
             }
+       }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    def imageName = jsonContent.imageName
+                    def imageTag = jsonContent.imageTag
+
+                    // Replace placeholder in deployment.yaml with the actual Docker image
+                    sh """
+                        sed -i 's#\\\$\\{dockerImage\\}#${dockerImage}#g' deployment.yaml
+                    """
+
+                    // Apply Kubernetes configuration
+                    
+                        sh 'kubectl apply -f deployment.yaml'
+                    
+                }
+            }
         }
     }
 }
