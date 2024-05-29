@@ -9,17 +9,16 @@ pipeline {
                     def jsonFile = readFile 'pipeline.json'
                     def jsonContent = readJSON text: jsonFile
                     
-                    // Extract the variable from JSON
-                    def imageName = jsonContent.dockerConfig.imageName
-                    def tag = jsonContent.dockerConfig.imageTag
-                    def dockerUsername = jsonContent.dockerConfig.dockerUsername
-                    
+                    // Extract the variables from JSON
+                    def imageName = jsonContent.imageName
+                    def imageTag = jsonContent.imageTag
+                    def dockerUsername = jsonContent.dockerUsername
                     
                     // Load the Groovy script
                     def call = load 'sample.groovy'
                     
-                    // Call the hello method with the greeting message
-                    call.runDockerTasks(imageName, tag, dockerUsername)
+                    // Call the runDockerTasks method with the Docker-related parameters
+                    call.runDockerTasks(imageName, imageTag, dockerUsername)
                 }
             }
         }
