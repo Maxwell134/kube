@@ -19,7 +19,7 @@ pipeline {
                     def call = load 'sample.groovy'
                     
                     // Call the hello method with the greeting message
-                    call.runDockerTasks(imageName, Tag, dockerUsername)
+                    call.runDockerTasks(imageName, tag, dockerUsername)
                 }
             }
         }
