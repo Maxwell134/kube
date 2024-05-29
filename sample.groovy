@@ -24,4 +24,4 @@ def runDockerTasks(imageName, imageTag, dockerUsername) {
 }
 
 // Call the method with values from pipeline.json
-runDockerTasks(pipelineConfig.imageName, pipelineConfig.imageTag, pipelineConfig.dockerUsername)
+return this 
