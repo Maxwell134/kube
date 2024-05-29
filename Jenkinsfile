@@ -31,15 +31,15 @@ pipeline {
             steps {
                 script {
 
-                    def jsonFile = readFile 'pipeline.json'
-                    def jsonContent = readJSON text: jsonFile
+                    // def jsonFile = readFile 'pipeline.json'
+                    // def jsonContent = readJSON text: jsonFile
                     
-                    def imageName = jsonContent.imageName
-                    def imageTag = jsonContent.imageTag
+                    // def imageName = jsonContent.imageName
+                    // def imageTag = jsonContent.imageTag
 
-                    // Replace placeholder in deployment.yaml with the actual Docker image
-                    sh """
-                        sed -i 's#\\\$\\{dockerImage\\}#${dockerImage}#g' deployment.yaml
+                    // // Replace placeholder in deployment.yaml with the actual Docker image
+                    // sh """
+                    //     sed -i 's#\\\$\\{dockerImage\\}#${dockerImage}#g' deployment.yaml
                     """
 
                     // Apply Kubernetes configuration
