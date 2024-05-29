@@ -30,6 +30,10 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+
+                    def jsonFile = readFile 'pipeline.json'
+                    def jsonContent = readJSON text: jsonFile
+                    
                     def imageName = jsonContent.imageName
                     def imageTag = jsonContent.imageTag
 
