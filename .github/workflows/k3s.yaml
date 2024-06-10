@@ -1,32 +1,20 @@
-name: K3s set up 
+name: K3s set up
 
 on:
-   workflow_dispatch 
+  workflow_dispatch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: checkout code
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: k3s set up 
+    - name: Install K3s
       run: |
         curl -sfL https://get.k3s.io | sh -
+        sudo chmod 644 /etc/rancher/k3s/k3s.yaml
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        kubectl get nodes
-        cat /etc/rancher/k3s/k3s.yaml | base64 -w 0
-
-
-
-
-
-
-
-
-
-
-
-
+        sudo kubectl get nodes
+        sudo cat /etc/rancher/k3s/k3s.yaml | base64 -w 0
