@@ -1,4 +1,4 @@
-name: K3s set up
+name: Deploy and Access Kubernetes Service
 
 on:
   workflow_dispatch
@@ -11,10 +11,46 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install K3s
+    - name: Install Docker
       run: |
-        curl -sfL https://get.k3s.io | sh -
-        sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        # sudo kubectl get nodes
-        sudo cat /etc/rancher/k3s/k3s.yaml | base64 -w 0
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt-get update
+        sudo apt-get install -y docker-ce
+        sudo usermod -aG docker $USER
+        sudo systemctl restart docker
+
+    - name: Install k3d
+      run: |
+        curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+    - name: Create k3s cluster
+      run: |
+        k3d cluster create mycluster --wait
+
+    - name: Configure kubectl
+      run: |
+        mkdir -p $HOME/.kube
+        k3d kubeconfig write mycluster
+        cp $(k3d kubeconfig write mycluster) $HOME/.kube/config
+        kubectl get nodes
+
+    - name: Deploy Kubernetes manifests
+      run: |
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
+
+    - name: Wait for service to be ready
+      run: |
+        kubectl wait --for=condition=available --timeout=600s deployment/my-service
+
+    - name: Access Kubernetes service
+      run: |
+        # Get the cluster IP of the service
+        SERVICE_IP=$(kubectl get service my-service -o jsonpath='{.spec.clusterIP}')
+        echo "Service IP: $SERVICE_IP"
+        
+        # Access the service using curl or any other method
+        curl http://$SERVICE_IP:80
