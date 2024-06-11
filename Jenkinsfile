@@ -24,17 +24,17 @@ pipeline {
         //     }
         // }
 
-        // stage('Install k3s') {
-        //     steps {
-        //         sh 'curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -'
-        //     }
-        // }
+        stage('Install k3s') {
+            steps {
+                sh 'curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -'
+            }
+        }
 
-        // stage('Configure KUBECONFIG') {
-        //     steps {
-        //         sh 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml && cp /etc/rancher/k3s/k3s.yaml $WORKSPACE/kubeconfig'
-        //     }
-        // }
+        stage('Configure KUBECONFIG') {
+            steps {
+                sh 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml && cp /etc/rancher/k3s/k3s.yaml $WORKSPACE/kubeconfig'
+            }
+        }
 
         stage('Check Nodes') {
             steps {
