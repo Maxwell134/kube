@@ -23,8 +23,7 @@ jobs:
 
     - name: Build and Deploy
       run: |
-        # ssh -o StrictHostKeyChecking=no ubuntu@3.94.127.132
-        #   # Update and install Docker if not already installed
+  
           sudo apt-get update
           sudo apt-get install -y docker.io
           ls -lrth 
