@@ -56,7 +56,7 @@ pipeline {
             steps {
                 sh '''
                 
-                kubectl get pods
+                kubectl get pods -o wide
                 kubectl get svc -o wide 
 
                 '''
@@ -64,9 +64,9 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            sh 'sudo k3s-uninstall.sh'  // Clean up k3s after the build
-        }
-    }
+    // post {
+    //     always {
+    //         sh 'sudo k3s-uninstall.sh'  // Clean up k3s after the build
+    //     }
+    // }
 }
