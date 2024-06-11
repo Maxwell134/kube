@@ -45,25 +45,21 @@ pipeline {
         stage('Deploy Sample Application') {
             steps {
                 sh '''
-                cat <<EOF | kubectl apply -f -
-                apiVersion: v1
-                kind: Pod
-                metadata:
-                  name: nginx
-                spec:
-                  containers:
-                  - name: nginx
-                    image: nginx
-                    ports:
-                    - containerPort: 80
-                EOF
+                kubectl apply -f deployment.yml 
+                kubectl apply -f service.yml
+                
                 '''
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh 'kubectl get pods'
+                sh '''
+                
+                kubectl get pods
+                kubectl get svc -o wide 
+
+                '''
             }
         }
     }
