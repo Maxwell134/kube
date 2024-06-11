@@ -11,10 +11,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup SSH
-      uses: actions/setup-ssh@v2
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
       with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        password: ${{ secrets.EC2_SSH_KEY  }}
+        port: 22
+        script: whoami
+        
 
     - name: Build and Deploy
       run: |
