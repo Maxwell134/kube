@@ -1,7 +1,7 @@
-name: Deploy and Access Kubernetes Service
+name: Deploy Docker to EC2
 
 on:
-  workflow_dispatch
+ workflow_dispatch
 
 jobs:
   deploy:
@@ -11,46 +11,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-        sudo apt-get update
-        sudo apt-get install -y docker-ce
-        sudo usermod -aG docker $USER
-        sudo systemctl restart docker
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Install k3d
+    - name: Build and Deploy
       run: |
-        curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+        ssh -o StrictHostKeyChecking=no ubuntu@<EC2_PUBLIC_IP> << 'EOF'
+          # Update and install Docker if not already installed
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          
+          # Navigate to the project directory
+          cd /path/to/your/project
 
-    - name: Create k3s cluster
-      run: |
-        k3d cluster create mycluster --wait
+          # Build the Docker image
+          sudo docker build -t my-app .
 
-    - name: Configure kubectl
-      run: |
-        mkdir -p $HOME/.kube
-        k3d kubeconfig write mycluster
-        cp $(k3d kubeconfig write mycluster) $HOME/.kube/config
-        kubectl get nodes
-
-    - name: Deploy Kubernetes manifests
-      run: |
-        kubectl apply -f deployment.yml
-        kubectl apply -f service.yml
-
-    - name: Wait for service to be ready
-      run: |
-        kubectl wait --for=condition=available --timeout=600s deployment/my-service
-
-    - name: Access Kubernetes service
-      run: |
-        # Get the cluster IP of the service
-        SERVICE_IP=$(kubectl get service my-service -o jsonpath='{.spec.clusterIP}')
-        echo "Service IP: $SERVICE_IP"
-        
-        # Access the service using curl or any other method
-        curl http://$SERVICE_IP:80
+          # Run the Docker container
+          sudo docker run -d -p 80:80 my-app
+        EOF
